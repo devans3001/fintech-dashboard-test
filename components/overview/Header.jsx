@@ -30,7 +30,7 @@ import SideBar from "../sidebar/SideBar";
 
 export default function Header({ name }) {
   return (
-    <header className="flex flex-wrap md:flex-nowrap justify-between items-center bg-red-500 p-3 gap-2">
+    <header className="flex flex-wrap md:flex-nowrap justify-between items-center p-3 gap-2">
       {/* Mobile Menu Button (Hidden on Desktop) */}
       <Sheet>
 
@@ -46,7 +46,7 @@ export default function Header({ name }) {
 
       {/* Greeting */}
       <h1 className="text-lg md:text-xl font-bold">
-        Hello, {name || "User"} 👋
+        Hello man, {name || "User"} 👋
       </h1>
 
       {/* Dropdown (Centered on Mobile) */}

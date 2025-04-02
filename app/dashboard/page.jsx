@@ -17,7 +17,7 @@ export default function Overview() {
       <Header name={name} />
 
       <div className="grid grid-cols-1 md:grid-cols-[3fr_1fr] gap-2 flex-grow min-h-0">
-        <div className="grid grid-rows-3 gap-2 min-h-0 h-auto">
+        <div className="grid grid-rows-[32%,32%,auto] gap-2 min-h-0 h-auto">
           <div className=" overflow-auto ">
             <CardBalance />
           </div>
