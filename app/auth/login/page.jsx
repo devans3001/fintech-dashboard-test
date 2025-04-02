@@ -1,6 +1,6 @@
 'use client'
 import { Card, CardContent } from "@/components/ui/card";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Switch } from "@/components/ui/switch";
 import Image from "next/image";
 import Link from "next/link";
@@ -8,15 +8,19 @@ import LoginForm from "./LoginForm";
 import { useSession,signIn as Lover } from "next-auth/react";
 import { signIn } from "@/lib/auth";
 import Btn from "./Btn";
+import { useRouter } from "next/navigation";
 // import animationData from "";
 
 export default function AuthLayout() {
   const [darkMode, setDarkMode] = useState(false);
-
+const router = useRouter()
   const session = useSession();
 
 
-  // console.log("Session:", session);
+useEffect(()=>{
+  if(session.status === "authenticated") router.push("/")
+
+},[session.status,router])
 
   return (
     <div className={`flex h-screen ${darkMode ? "bg-gray-900" : "bg-white"}`}>

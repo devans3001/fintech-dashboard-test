@@ -5,18 +5,21 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
 export default function Home() {
-  const { data: session, status } = useSession();
+  const { status } = useSession();
   const router = useRouter();
 
   useEffect(() => {
+    // Only redirect when status is CERTAIN (not loading)
     if (status === "authenticated") {
-      router.replace("/dashboard"); // Redirect to dashboard if logged in
+      router.replace("/dashboard");
     } else if (status === "unauthenticated") {
-      router.replace("/auth/login"); // Redirect to login if not authenticated
+      router.replace("/auth/login");
     }
-  }, [status, router]);
+    // No redirects while status === "loading"
+  }, [status,router]);
 
-  if (status === "loading") return <p>Loading...</p>;
+  console.log(status,"home");
 
-  return null; // No content needed since it redirects
+  if(status === "loading") return <div>Loading...</div>
+  return null; // Renders nothing
 }

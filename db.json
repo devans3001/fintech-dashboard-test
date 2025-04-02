@@ -1,0 +1,64 @@
+{
+  "users": [
+    {
+      "id": "1",
+      "email": "user@example.com",
+      "password": "$2a$10$hashedpassword",
+      "name": "John Doe",
+      "balance": 5000,
+      "accounts": [
+        {
+          "id": "savings-1",
+          "type": "Savings",
+          "balance": 3000,
+          "apy": 1.5
+        },
+        {
+          "id": "investment-1",
+          "type": "Investment",
+          "balance": 2000,
+          "returnRate": 7.2
+        }
+      ],
+      "transactions": [
+        {
+          "id": "txn-1",
+          "accountId": "savings-1",
+          "type": "deposit",
+          "amount": 1000,
+          "date": "2023-10-01T09:00:00Z",
+          "description": "Initial deposit"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "email": "loveooeoe"
+    },
+    {
+      "id": 1743464337288,
+      "name": "lover",
+      "email": "knkenfkr",
+      "password": "$2b$10$Aj4NjtYTvQsFvIbE.uqeveAABi2iKyAruCFHGFtVLyKbCYIWXjava",
+      "createdAt": "2025-03-31T23:38:57.289Z"
+    },
+    {
+      "id": 1743465626722,
+      "name": "Evans",
+      "email": "evans@lol.com",
+      "password": "$2b$10$XEg3JwZlZqhvfWUurF3mBefw3G8dlFmP/EmV5bDrujED8XKPsMhZ.",
+      "createdAt": "2025-04-01T00:00:26.722Z"
+    }
+  ],
+  "marketData": [
+    {
+      "symbol": "SPY",
+      "name": "S&P 500 ETF",
+      "price": 425.5,
+      "change": 1.25,
+      "changePercent": 0.29,
+      "lastUpdated": "2023-10-01T16:00:00Z",
+      "id": "2428"
+    }
+  ]
+}

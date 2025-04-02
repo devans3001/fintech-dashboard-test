@@ -1,43 +1,99 @@
-
-
 import { NextResponse } from "next/server";
-import fs from "fs/promises";
-import path from "path";
 import bcrypt from "bcryptjs";
+import { redirect } from "next/navigation";
 
-const usersFile = path.join(process.cwd(), "app/data/users.json");
+const JSON_SERVER_URL = process.env.JSON_SERVER_URL || "http://localhost:3001";
 
 export async function POST(req) {
   try {
     const { name, email, password, type } = await req.json();
-    const users = JSON.parse(await fs.readFile(usersFile, "utf-8"));
+
+    if (!email || !password) {
+      return NextResponse.json(
+        { error: "Email and password are required" },
+        { status: 400 }
+      );
+    }
 
     if (type === "signup") {
-      // Check if user already exists
-      if (users.some((u) => u.email === email)) {
-        return NextResponse.json({ error: "User already exists" }, { status: 400 });
+      const res = await fetch(`${JSON_SERVER_URL}/users?email=${email}`);
+      const existingUsers = await res.json();
+
+      if (existingUsers.length > 0) {
+        return NextResponse.json(
+          { error: "User already exists" },
+          { status: 400 }
+        );
       }
 
-      // Hash password and save new user
       const hashedPassword = await bcrypt.hash(password, 10);
-      users.push({ id: Date.now(), name, email, password: hashedPassword });
-      await fs.writeFile(usersFile, JSON.stringify(users, null, 2));
+      const newUser = {
+        id: Date.now(),
+        name,
+        email,
+        password: hashedPassword,
+        createdAt: new Date().toISOString(),
+      };
 
-      return NextResponse.json({ message: "User registered successfully" }, { status: 201 });
+      const createUserRes = await fetch(`${JSON_SERVER_URL}/users`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newUser),
+      });
+
+      if (!createUserRes.ok) throw new Error("Failed to create user");
+
+    //   redirect("dashboard")
+
+      return NextResponse.json(
+        { message: "User registered successfully", user: { id: newUser.id, name, email } },
+        { status: 201 }
+      );
     }
 
     if (type === "login") {
-      // Find user
-      const user = users.find((u) => u.email === email);
-      if (!user || !(await bcrypt.compare(password, user.password))) {
-        return NextResponse.json({ error: "Invalid credentials" }, { status: 401 });
+      const findUserRes = await fetch(`${JSON_SERVER_URL}/users?email=${email}`);
+      const users = await findUserRes.json();
+      const user = users[0];
+
+      if (!user) {
+        return NextResponse.json(
+          { error: "User not found" },
+          { status: 401 }
+        );
       }
 
-      return NextResponse.json({ message: "Login successful", user }, { status: 200 });
+      if (!user.password) {
+        return NextResponse.json(
+          { error: "User has no password stored" },
+          { status: 401 }
+        );
+      }
+
+      const isMatch = await bcrypt.compare(password, user.password);
+      if (!isMatch) {
+        return NextResponse.json(
+          { error: "Invalid credentials" },
+          { status: 401 }
+        );
+      }
+
+      const { password: _, ...userData } = user;
+      return NextResponse.json(
+        { message: "Login successful test", user: userData },
+        { status: 200 }
+      );
     }
 
-    return NextResponse.json({ error: "Invalid request" }, { status: 400 });
+    return NextResponse.json(
+      { error: "Invalid request type" },
+      { status: 400 }
+    );
   } catch (error) {
-    return NextResponse.json({ error: "Server error" }, { status: 500 });
+    console.error("Auth error:", error);
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    );
   }
 }
