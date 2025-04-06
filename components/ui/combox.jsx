@@ -19,34 +19,48 @@ import {
   PopoverTrigger,
 } from "./popover"
 import { Button } from "./button"
+import { useRouter, useSearchParams } from "next/navigation"
 
 const frameworks = [
   {
-    value: "next.js",
-    label: "Next.js",
+    value: "savings",
+    label: "Savings",
   },
   {
-    value: "sveltekit",
-    label: "SvelteKit",
+    value: "income",
+    label: "Incomes",
   },
+ 
   {
-    value: "nuxt.js",
-    label: "Nuxt.js",
+    value: "expenses",
+    label: "Expenses",
   },
-  {
-    value: "remix",
-    label: "Remix",
-  },
-  {
-    value: "astro",
-    label: "Astro",
-  },
+
 ]
 
 export default function ComboboxDemo() {
   const [open, setOpen] = React.useState(false)
-  const [value, setValue] = React.useState("")
 
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  
+  const initialValue = searchParams.get('accType') || ""
+  const [value, setValue] = React.useState(initialValue)
+
+
+  const handleSelect = (currentValue) => {
+    const newValue = currentValue === value ? "" : currentValue
+    setValue(newValue)
+    setOpen(false)
+    
+    const params = new URLSearchParams(searchParams.toString())
+    if (newValue) {
+      params.set('accType', newValue)
+    } else {
+      params.delete('accType')
+    }
+    router.push(`?${params.toString()}`, { scroll: false })
+  }
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
@@ -58,24 +72,21 @@ export default function ComboboxDemo() {
         >
           {value
             ? frameworks.find((framework) => framework.value === value)?.label
-            : "Select framework..."}
+            : "Select Account Type..."}
           <ChevronsUpDown className="opacity-50" />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-[200px] p-0">
         <Command>
-          <CommandInput placeholder="Search framework..." className="h-9" />
+          {/* <CommandInput placeholder="Select Account Typej..." className="h-9" /> */}
           <CommandList>
-            <CommandEmpty>No framework found.</CommandEmpty>
+            <CommandEmpty>No Accounts found.</CommandEmpty>
             <CommandGroup>
               {frameworks.map((framework) => (
                 <CommandItem
                   key={framework.value}
                   value={framework.value}
-                  onSelect={(currentValue) => {
-                    setValue(currentValue === value ? "" : currentValue)
-                    setOpen(false)
-                  }}
+                  onSelect={handleSelect}
                 >
                   {framework.label}
                   <Check

@@ -6,7 +6,6 @@ import { Separator } from "../ui/separator";
 export default function SideRoutes() {
   const pathname = usePathname();
 
-  console.log(pathname);
   return (
     <>
     <div className="flex-1 flex flex-col gap-3 px-3">

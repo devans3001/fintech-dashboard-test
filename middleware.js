@@ -11,6 +11,8 @@ import { auth } from "@/lib/auth";
 // };
 
 // middleware.js
+
+
 export default auth((req) => {
   const { pathname } = req.nextUrl;
   

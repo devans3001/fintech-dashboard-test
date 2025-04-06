@@ -1,29 +1,39 @@
-"use client"
-import { Button } from "@/components/ui/button";
-import { signOut, useSession } from "next-auth/react";
-import { useTransition } from "react";
+"use client";
 
-export default function Dashboard() {
-  const session =  useSession();
+import Header from "@/components/overview/Header";
+import { useSession } from "next-auth/react";
+import CardBalance from "../../components/overview/CardBalance";
+import FinancialRecord from "@/components/financialRecord/FinancialRecord";
+import MoneyFlowChart from "@/components/money-flow/MoneyFlow";
+import Transactions from "@/components/transaction/Transactions";
 
-  const [isPending, startTransition] = useTransition();
+export default function Overview() {
+  const session = useSession();
 
-  console.log(session);
-  const handleLogout = async () => {
+  const name = session?.data?.user?.name.split(" ")[0];
 
-    startTransition(async () => {
-      console.log("Logging out...");
-      await signOut();
-    });
-  };
   return (
-    <div>
-      <p>Dashbaord</p>
-      <form action={handleLogout}>
-        <Button disabled={isPending}>
-          {isPending ? "outing" : "Sign out"}
-        </Button>
-      </form>
-    </div>
+    <>
+      <Header name={name} />
+
+      <div className="grid grid-cols-1 md:grid-cols-[3fr_1fr] gap-2 flex-grow min-h-0">
+        <div className="grid grid-rows-[35%,35%,auto] gap-2 min-h-0 h-auto">
+          <div className=" overflow-auto ">
+            <CardBalance />
+          </div>
+          <div className="overflow-auto text-white">
+            <FinancialRecord />
+          </div>
+          <div className="overflow-auto hide-scrollbar ">
+            <MoneyFlowChart/>
+            {/* <CompactFinancialChart/> */}
+          </div>
+        </div>
+
+        <div className=" overflow-auto hidden md:block">
+          <Transactions/>
+        </div>
+      </div>
+    </>
   );
 }

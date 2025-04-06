@@ -17,7 +17,7 @@ export default function SignOut() {
       });
     };
   return (
-    <div onClick={handleLogout} disabled={isPending} className="cursor-pointer flex items-center gap-1">
+    <div onClick={handleLogout} disabled={isPending} className="cursor-pointer flex items-center gap-1 px-2">
     <p>
 
     {isPending ? "Signing out..." : "Sign out"}

@@ -1,4 +1,4 @@
-import { Button } from "../ui/button";
+import { createContext } from "react";
 
 import {
   Dialog,
@@ -8,23 +8,35 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-export default function DialogIcon({ icon }) {
+export default function DialogComponent({ children }) {
+  const DialogContext = createContext();
   return (
-    <Dialog>
-      <DialogTrigger>
-        <Button className="rounded-[50%] text-lg bg-gray-100 cursor-pointer hover:bg-white transition-all duration-300">
-          {icon}
-        </Button>
-      </DialogTrigger>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Some</DialogTitle>
-          <DialogDescription>
-            This action cannot be undone. This will permanently delete your
-            account and remove your data from our servers.
-          </DialogDescription>
-        </DialogHeader>
-      </DialogContent>
-    </Dialog>
+    <DialogContext.Provider value={{}}>
+      <Dialog>{children}</Dialog>
+    </DialogContext.Provider>
   );
 }
+
+function DialogTriggerComp({ children }) {
+  return <DialogTrigger>{children}</DialogTrigger>;
+}
+
+function DialogContentComp({ title, description, children }) {
+  return (
+    <DialogContent>
+      <DialogHeader>
+        {title && <DialogTitle>{title}</DialogTitle>}
+        {description && (
+          <DialogDescription className="text-sm text-muted-foreground">
+            {description}
+          </DialogDescription>
+        )}
+      </DialogHeader>
+      {children}
+    </DialogContent>
+  );
+}
+
+DialogComponent.Trigger = DialogTriggerComp;
+DialogComponent.Content = DialogContentComp;
+// DialogComponent.Header = DialogHeader;
